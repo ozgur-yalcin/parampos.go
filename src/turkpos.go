@@ -21,6 +21,7 @@ type API struct {
 type Request struct {
 	XMLName xml.Name `xml:"soap:Envelope,omitempty"`
 	Body    struct {
+		XMLName xml.Name `xml:"soap:Body,omitempty"`
 		Payment struct {
 			G struct {
 				ClientCode     interface{} `xml:"CLIENT_CODE,omitempty"`
