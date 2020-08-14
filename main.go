@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 
@@ -59,25 +60,27 @@ func view(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path == "/" {
 			fmt.Println(request.Body.Payment.OrderID)
 			response := api.Payment(request)
-			switch response.Body.Payment.Result.Code {
-			case 1: // işlem başarılı
-				if request.Body.Payment.Security == "3D" {
+			if response.Body.Payment.Result.Code > 0 { // işlem başarılı
+				if response.Body.Payment.Result.URL == "NONSECURE" {
+					fmt.Println(response.Body.Payment.Result.TransactionID) // iptal ve iadelerde kullanılan dekont numarası
+				} else { // 3d yönlendirme
 					fmt.Println(response.Body.Payment.Result.URL)
 					http.Redirect(w, r, response.Body.Payment.Result.URL, http.StatusTemporaryRedirect)
 				}
-				break
-			default: // işlem başarısız
+			} else { // işlem başarısız
 				fmt.Println(response.Body.Payment.Result.Code)     // Hata kodu
 				fmt.Println(response.Body.Payment.Result.Message)  // Hata mesajı
 				fmt.Println(response.Body.Payment.Result.BankCode) // Bankadan dönen kod
-				break
 			}
 		}
 		break
-	case "POST": // 3D ödeme sonucu
+	case "POST": // 3D yönlendirme sonrası işlem sonucu
 		r.ParseForm()
-		dekontID := r.FormValue("TURKPOS_RETVAL_Dekont_ID") // iptal ve iadelerde kullanılan dekont numarası
-		fmt.Println(dekontID)
+		if dekontID, err := strconv.Atoi(r.FormValue("TURKPOS_RETVAL_Dekont_ID")); err != nil {
+			fmt.Println(dekontID) // iptal ve iadelerde kullanılan dekont numarası
+		} else {
+			fmt.Println("ödeme başarısız")
+		}
 		break
 	}
 }
