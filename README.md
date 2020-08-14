@@ -6,7 +6,6 @@ TurkPos (ParamPos) API with golang
 # Installation
 ```bash
 go get github.com/OzqurYalcin/turkpos
-go get github.com/google/uuid
 ```
 
 # Sanalpos ödeme işlemi
