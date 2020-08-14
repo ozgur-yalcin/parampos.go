@@ -75,14 +75,13 @@ func view(w http.ResponseWriter, r *http.Request) {
 			response := api.Payment(request)
 			if response.Body.Payment.Result.Code > 0 {
 				if response.Body.Payment.Result.URL == "NONSECURE" { // işlem başarılı
-					fmt.Println(response.Body.Payment.Result.TransactionID) // iptal ve iadelerde kullanılan dekont numarası
+					transactionID := response.Body.Payment.Result.TransactionID
+					fmt.Println(transactionID) // iptal ve iadelerde kullanılan dekont numarası
 				} else {
 					http.Redirect(w, r, response.Body.Payment.Result.URL, http.StatusTemporaryRedirect) // 3d yönlendirme
 				}
 			} else { // işlem başarısız
-				fmt.Println(response.Body.Payment.Result.Code)     // Hata kodu
-				fmt.Println(response.Body.Payment.Result.Message)  // Hata mesajı
-				fmt.Println(response.Body.Payment.Result.BankCode) // Bankadan dönen kod
+				fmt.Println(response.Body.Payment.Result.Message) // Hata mesajı
 			}
 		}
 		break
