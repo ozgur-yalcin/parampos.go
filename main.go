@@ -29,8 +29,7 @@ func view(w http.ResponseWriter, r *http.Request) {
 	installment := 1      // Taksit
 
 	request.Body.Payment.PosID = 1029                    // 1029: yurtiçi, yurtdışı: 1023
-	request.Body.Payment.Security = "3D"                 // "3D": 3dSecure, "NS": NonSecure
-	request.Body.Payment.Description = "Açıklama"        // Açıklama
+	request.Body.Payment.Security = "NS"                 // "3D": 3dSecure, "NS": NonSecure
 	request.Body.Payment.CardOwner = "Ad soyad"          // Kart sahibi
 	request.Body.Payment.CardNumber = "4546711234567894" // Kart numarası
 	request.Body.Payment.CardMonth = "12"                // Son kullanma tarihi (Ay)
@@ -73,10 +72,10 @@ func view(w http.ResponseWriter, r *http.Request) {
 	case "POST": // 3D yönlendirme sonrası işlem sonucu
 		r.ParseForm()
 		transactionID, err := strconv.ParseInt(r.FormValue("TURKPOS_RETVAL_Dekont_ID"), 10, 64)
-		if err != nil { // işlem başarılı
-			fmt.Println(transactionID) // iptal ve iadelerde kullanılan dekont numarası
-		} else { // işlem başarısız
+		if err != nil { // işlem başarısız
 			fmt.Println("hata")
+		} else {
+			fmt.Println(transactionID) // iptal ve iadelerde kullanılan dekont numarası
 		}
 		break
 	}
