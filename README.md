@@ -35,10 +35,10 @@ func main() {
 	installment := 1      // Taksit
 
 	request.Body.Payment.OrderID = uuid.New().String()
-	request.Body.Payment.PosID = 1029                    // 1029:yurtiçi, yurtdışı:1023
+	request.Body.Payment.PosID = 1029                    // 1029: yurtiçi, yurtdışı: 1023
 	request.Body.Payment.Security = "3D"                 // "3D": 3dSecure, "NS": NonSecure
-	request.Body.Payment.Description = "Açıklama"        // Açıklama
-	request.Body.Payment.CardOwner = "Kart sahibi"       // Kart sahibi
+	request.Body.Payment.Description = ""                // Açıklama
+	request.Body.Payment.CardOwner = ""                  // Kart sahibi
 	request.Body.Payment.CardNumber = "4546711234567894" // Kart numarası
 	request.Body.Payment.CardMonth = "12"                // Son kullanma tarihi (Ay)
 	request.Body.Payment.CardYear = "2026"               // Son kullanma tarihi (Yıl)
