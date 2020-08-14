@@ -8,7 +8,6 @@ import (
 	"time"
 
 	turkpos "github.com/OzqurYalcin/turkpos/src"
-	uuid "github.com/google/uuid"
 )
 
 func main() {
@@ -29,7 +28,6 @@ func view(w http.ResponseWriter, r *http.Request) {
 	commission := 0.94    // Komisyon oranı
 	installment := 1      // Taksit
 
-	request.Body.Payment.OrderID = uuid.New().String()   // Sipariş numarası
 	request.Body.Payment.PosID = 1029                    // 1029: yurtiçi, yurtdışı: 1023
 	request.Body.Payment.Security = "3D"                 // "3D": 3dSecure, "NS": NonSecure
 	request.Body.Payment.Description = "Açıklama"        // Açıklama
