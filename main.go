@@ -58,14 +58,12 @@ func view(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case "GET":
 		if r.URL.Path == "/" {
-			fmt.Println(request.Body.Payment.OrderID)
 			response := api.Payment(request)
-			if response.Body.Payment.Result.Code > 0 { // işlem başarılı
-				if response.Body.Payment.Result.URL == "NONSECURE" {
+			if response.Body.Payment.Result.Code > 0 {
+				if response.Body.Payment.Result.URL == "NONSECURE" { // işlem başarılı
 					fmt.Println(response.Body.Payment.Result.TransactionID) // iptal ve iadelerde kullanılan dekont numarası
-				} else { // 3d yönlendirme
-					fmt.Println(response.Body.Payment.Result.URL)
-					http.Redirect(w, r, response.Body.Payment.Result.URL, http.StatusTemporaryRedirect)
+				} else {
+					http.Redirect(w, r, response.Body.Payment.Result.URL, http.StatusTemporaryRedirect) // 3d yönlendirme
 				}
 			} else { // işlem başarısız
 				fmt.Println(response.Body.Payment.Result.Code)     // Hata kodu
@@ -76,10 +74,10 @@ func view(w http.ResponseWriter, r *http.Request) {
 		break
 	case "POST": // 3D yönlendirme sonrası işlem sonucu
 		r.ParseForm()
-		if dekontID, err := strconv.Atoi(r.FormValue("TURKPOS_RETVAL_Dekont_ID")); err != nil {
+		if dekontID, err := strconv.Atoi(r.FormValue("TURKPOS_RETVAL_Dekont_ID")); err != nil { // işlem başarılı
 			fmt.Println(dekontID) // iptal ve iadelerde kullanılan dekont numarası
-		} else {
-			fmt.Println("ödeme başarısız")
+		} else { // işlem başarısız
+			fmt.Println("hata")
 		}
 		break
 	}
