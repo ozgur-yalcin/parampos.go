@@ -2,11 +2,11 @@ package turkpos
 
 import (
 	"encoding/xml"
-	"fmt"
-	"io/ioutil"
 	"log"
 	"net/http"
 	"strings"
+
+	"golang.org/x/net/html/charset"
 )
 
 var Modes map[string]string = map[string]string{
@@ -59,22 +59,25 @@ type Request struct {
 }
 
 type Response struct {
-	XMLName xml.Name `xml:"TP_Islem_OdemeResponse,omitempty"`
-	NS      string   `xml:"xmlns,attr"`
-	Payment struct {
-		XMLName       xml.Name    `xml:"TP_Islem_OdemeResult,omitempty"`
-		TransactionID interface{} `xml:"Islem_ID,omitempty"`
-		URL           interface{} `xml:"UCD_URL,omitempty"`
-		Code          interface{} `xml:"Sonuc,omitempty"`
-		Message       interface{} `xml:"Sonuc_Str,omitempty"`
-		Result        interface{} `xml:"Banka_Sonuc_Kod,omitempty"`
+	XMLName xml.Name
+	Body    struct {
+		XMLName xml.Name
+		Payment struct {
+			Result struct {
+				Result        int    `xml:"Banka_Sonuc_Kod,omitempty"`
+				TransactionID int64  `xml:"Islem_ID,omitempty"`
+				URL           string `xml:"UCD_URL,omitempty"`
+				Code          string `xml:"Sonuc,omitempty"`
+				Message       string `xml:"Sonuc_Str,omitempty"`
+			} `xml:"TP_Islem_OdemeResult,omitempty"`
+		} `xml:"TP_Islem_OdemeResponse,omitempty"`
 	}
 }
 
-func (api *API) Payment(request *Request) (response Response) {
+func (api *API) Payment(request *Request) (response *Response) {
 	request.Soap = "http://schemas.xmlsoap.org/soap/envelope/"
 	request.Body.Payment.NS = "https://turkpos.com.tr/"
-	response = Response{}
+	response = new(Response)
 	postdata, _ := xml.Marshal(request)
 	res, err := http.Post(Modes[api.Mode]+"?op=TP_Islem_Odeme", "text/xml; charset=utf-8", strings.NewReader(strings.ToLower(xml.Header)+string(postdata)))
 	if err != nil {
@@ -82,20 +85,8 @@ func (api *API) Payment(request *Request) (response Response) {
 		return response
 	}
 	defer res.Body.Close()
-	data, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		log.Println(err)
-		return response
-	}
-	replacers := strings.NewReplacer(
-		`<?xml version="1.0" encoding="utf-8"?>`, ``,
-		`<soap:Envelope xmlns:soap="`+request.Soap+`" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">`, ``,
-		`</soap:Envelope>`, ``,
-		`<soap:Body>`, ``,
-		`</soap:Body>`, ``,
-	)
-	xmldata := strings.ToLower(xml.Header) + replacers.Replace(string(data))
-	fmt.Println(xmldata)
-	xml.Unmarshal([]byte(xmldata), &response)
+	decoder := xml.NewDecoder(res.Body)
+	decoder.CharsetReader = charset.NewReaderLabel
+	decoder.Decode(&response)
 	return response
 }

@@ -14,9 +14,11 @@ func main() {
 	request.Body.Payment.G.ClientCode = "10738"    // Müşteri No
 	request.Body.Payment.G.ClientUsername = "Test" // Kullanıcı adı
 	request.Body.Payment.G.ClientPassword = "Test" // Şifre
+
 	// Ödeme
-	commission := 0.0094
-	amount := 100.00
+	commission := 0.94 // komisyon oranı
+	amount := 100.00   // işlem tutarı
+	installment := 1   // taksit
 	request.Body.Payment.GUID = "0c13d406-873b-403b-9c09-a5766840d98c"
 	request.Body.Payment.Security = "NS"
 	request.Body.Payment.OrderID = uuid.New().String()
@@ -28,9 +30,9 @@ func main() {
 	request.Body.Payment.CardYear = "2026"
 	request.Body.Payment.CardCvc = "000"
 	request.Body.Payment.GsmNumber = "5554443322"
-	request.Body.Payment.Price = strings.ReplaceAll(fmt.Sprintf("%.2f", amount-(amount*commission)), ".", ",")
+	request.Body.Payment.Price = strings.ReplaceAll(fmt.Sprintf("%.2f", amount-(amount*commission/100)), ".", ",")
 	request.Body.Payment.Amount = strings.ReplaceAll(fmt.Sprintf("%.2f", amount), ".", ",")
-	request.Body.Payment.Installment = 1
+	request.Body.Payment.Installment = installment
 	request.Body.Payment.IPAddr = "85.34.78.112"
 	request.Body.Payment.Referer = "https://www.example.com/payment"
 	request.Body.Payment.CallbackError = "https://www.example.com/payment"
@@ -38,5 +40,5 @@ func main() {
 	request.Body.Payment.Hash = ""
 
 	response := api.Payment(request)
-	fmt.Println(response.Payment.Message)
+	fmt.Println(response.Body.Payment.Result.Message)
 }
