@@ -78,9 +78,9 @@ type Response struct {
 		Payment struct {
 			Result struct {
 				URL           string `xml:"UCD_URL,omitempty"`
-				Code          string `xml:"Sonuc,omitempty"`
-				Message       string `xml:"Sonuc_Str,omitempty"`
 				BankCode      int    `xml:"Banka_Sonuc_Kod,omitempty"`
+				Code          int    `xml:"Sonuc,omitempty"`
+				Message       string `xml:"Sonuc_Str,omitempty"`
 				TransactionID int64  `xml:"Islem_ID,omitempty"`
 			} `xml:"TP_Islem_OdemeResult,omitempty"`
 		} `xml:"TP_Islem_OdemeResponse,omitempty"`
