@@ -14,14 +14,13 @@ func main() {
 	request.Body.Payment.G.ClientCode = "10738"    // Müşteri No
 	request.Body.Payment.G.ClientUsername = "Test" // Kullanıcı adı
 	request.Body.Payment.G.ClientPassword = "Test" // Şifre
-	request.Body.Payment.GUID = "0c13d406-873b-403b-9c09-a5766840d98c"
 
 	// Ödeme
 	transaction := 100.00 // İşlem tutarı
 	commission := 0.94    // Komisyon oranı
 	installment := 1      // Taksit
 
-	request.Body.Payment.OrderID = uuid.New().String()
+	request.Body.Payment.OrderID = uuid.New().String()   // Sipariş numarası
 	request.Body.Payment.PosID = 1029                    // 1029: yurtiçi, yurtdışı: 1023
 	request.Body.Payment.Security = "3D"                 // "3D": 3dSecure, "NS": NonSecure
 	request.Body.Payment.Description = ""                // Açıklama
@@ -33,9 +32,10 @@ func main() {
 	request.Body.Payment.GsmNumber = "5554443322"        // Müşteri cep telefonu
 	request.Body.Payment.IPAddr = "1.2.3.4"              // Müşteri ip adresi
 
-	request.Body.Payment.CallbackSuccess = "https://www.example.com/payment" // ödeme başarılı ise dönülecek sayfa
-	request.Body.Payment.CallbackError = "https://www.example.com/payment"   // ödeme başarısız ise dönülecek sayfa
-	request.Body.Payment.Referer = "https://www.example.com/payment"         // ödeme sayfası
+	request.Body.Payment.GUID = "0c13d406-873b-403b-9c09-a5766840d98c"       // Üye işyerine ait anahtar
+	request.Body.Payment.CallbackSuccess = "https://www.example.com/payment" // Ödeme başarılı ise dönülecek sayfa
+	request.Body.Payment.CallbackError = "https://www.example.com/payment"   // Ödeme başarısız ise dönülecek sayfa
+	request.Body.Payment.Referer = "https://www.example.com/payment"         // Ödeme sayfası
 
 	// Komisyonu müşteri ödeyecek ise :
 	request.Body.Payment.Price = strings.ReplaceAll(fmt.Sprintf("%.2f", transaction), ".", ",")
