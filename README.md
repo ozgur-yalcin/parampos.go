@@ -68,7 +68,7 @@ func view(w http.ResponseWriter, r *http.Request) {
 	request.Body.Payment.Price = strings.ReplaceAll(fmt.Sprintf("%.2f", transaction-(transaction*commission/100)), ".", ",")
 	request.Body.Payment.Amount = strings.ReplaceAll(fmt.Sprintf("%.2f", transaction), ".", ",")
 	request.Body.Payment.Installment = installment
-	
+
 	switch r.Method {
 	case "GET":
 		if r.URL.Path == "/" {
@@ -88,8 +88,9 @@ func view(w http.ResponseWriter, r *http.Request) {
 		break
 	case "POST": // 3D yönlendirme sonrası işlem sonucu
 		r.ParseForm()
-		if dekontID, err := strconv.Atoi(r.FormValue("TURKPOS_RETVAL_Dekont_ID")); err != nil { // işlem başarılı
-			fmt.Println(dekontID) // iptal ve iadelerde kullanılan dekont numarası
+		transactionID, err := strconv.ParseInt(r.FormValue("TURKPOS_RETVAL_Dekont_ID"), 10, 64)
+		if err != nil { // işlem başarılı
+			fmt.Println(transactionID) // iptal ve iadelerde kullanılan dekont numarası
 		} else { // işlem başarısız
 			fmt.Println("hata")
 		}
