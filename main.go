@@ -55,6 +55,7 @@ func view(w http.ResponseWriter, r *http.Request) {
 	request.Body.Payment.Price = strings.ReplaceAll(fmt.Sprintf("%.2f", transaction-(transaction*commission/100)), ".", ",")
 	request.Body.Payment.Amount = strings.ReplaceAll(fmt.Sprintf("%.2f", transaction), ".", ",")
 	request.Body.Payment.Installment = installment
+
 	switch r.Method {
 	case "GET":
 		if r.URL.Path == "/" {
