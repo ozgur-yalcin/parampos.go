@@ -38,5 +38,5 @@ func main() {
 	request.Body.Payment.Hash = ""
 
 	response := api.Payment(request)
-	fmt.Println(response.Body.Payment.Result.Message)
+	fmt.Println(response.Payment.Message)
 }
