@@ -75,7 +75,7 @@ func view(w http.ResponseWriter, r *http.Request) {
 				if response.Body.Payment.Result.URL == "NONSECURE" { // işlem başarılı
 					transactionID := response.Body.Payment.Result.TransactionID
 					fmt.Println(transactionID) // iptal ve iadelerde kullanılan dekont numarası
-				} else if response.Body.Payment.Result.URL != "" {
+				} else if strings.HasPrefix(response.Body.Payment.Result.URL, "https://") {
 					http.Redirect(w, r, response.Body.Payment.Result.URL, http.StatusTemporaryRedirect) // 3d yönlendirme
 				}
 			} else { // işlem başarısız
