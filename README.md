@@ -31,7 +31,7 @@ func main() {
 
 func view(w http.ResponseWriter, r *http.Request) {
 	api := &turkpos.API{"T"} // "T": test, "P": production
-	request := &turkpos.PaymentRequest{}
+	request := new(turkpos.PaymentRequest)
 	request.Body.Payment.G.ClientCode = "10738"    // Müşteri No
 	request.Body.Payment.G.ClientUsername = "Test" // Kullanıcı adı
 	request.Body.Payment.G.ClientPassword = "Test" // Şifre
@@ -85,11 +85,21 @@ func view(w http.ResponseWriter, r *http.Request) {
 		break
 	case "POST": // 3D yönlendirme sonrası işlem sonucu
 		r.ParseForm()
-		transactionID, err := strconv.ParseInt(r.FormValue("TURKPOS_RETVAL_Dekont_ID"), 10, 64)
-		if err != nil { // işlem başarısız
-			fmt.Println("hata")
-		} else {
+		response := new(turkpos.Response)
+		transactionID, _ := strconv.ParseInt(r.FormValue("TURKPOS_RETVAL_Dekont_ID"), 10, 64)
+		bankCode, _ := strconv.Atoi(r.FormValue("TURKPOS_RETVAL_Banka_Sonuc_Kod"))
+		code, _ := strconv.Atoi(r.FormValue("TURKPOS_RETVAL_Sonuc"))
+		message := r.FormValue("TURKPOS_RETVAL_Sonuc_Str")
+		response.Body.Payment.Result.TransactionID = transactionID
+		response.Body.Payment.Result.BankCode = bankCode
+		response.Body.Payment.Result.Code = code
+		response.Body.Payment.Result.Message = message
+		pretty, _ := json.MarshalIndent(response.Body.Payment, " ", " ")
+		fmt.Println(string(pretty))
+		if response.Body.Payment.Result.Code > 0 {
 			fmt.Println(transactionID) // iptal ve iadelerde kullanılan dekont numarası
+		} else { // işlem başarısız
+			fmt.Println(response.Body.Payment.Result.Message) // Hata mesajı
 		}
 		break
 	}
