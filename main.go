@@ -35,7 +35,6 @@ func view(w http.ResponseWriter, r *http.Request) {
 	installment := 1    // Taksit
 
 	request.Body.Payment.PosID = 1029                    // 1029: yurtiçi, yurtdışı: 1023
-	request.Body.Payment.Security = "NS"                 // "3D": 3dSecure, "NS": NonSecure
 	request.Body.Payment.CardOwner = "AD SOYAD"          // Kart sahibi
 	request.Body.Payment.CardNumber = "4546711234567894" // Kart numarası
 	request.Body.Payment.CardMonth = "12"                // Son kullanma tarihi (Ay)

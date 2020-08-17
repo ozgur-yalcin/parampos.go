@@ -31,7 +31,6 @@ type PaymentRequest struct {
 			} `xml:"G,omitempty"`
 			GUID            string `xml:"GUID,omitempty"`
 			Hash            string `xml:"Islem_Hash,omitempty"`
-			Security        string `xml:"Islem_Guvenlik_Tip,omitempty"`
 			PosID           int    `xml:"SanalPOS_ID,omitempty"`
 			OrderID         string `xml:"Siparis_ID,omitempty"`
 			Description     string `xml:"Siparis_Aciklama,omitempty"`
@@ -53,7 +52,7 @@ type PaymentRequest struct {
 			Data3           string `xml:"Data3,omitempty"`
 			Data4           string `xml:"Data4,omitempty"`
 			Data5           string `xml:"Data5,omitempty"`
-		} `xml:"TP_Islem_Odeme_WNS,omitempty"`
+		} `xml:"TP_Islem_Odeme,omitempty"`
 	}
 }
 
@@ -80,8 +79,8 @@ type Response struct {
 				Code          int    `xml:"Sonuc,omitempty"`
 				Message       string `xml:"Sonuc_Str,omitempty"`
 				TransactionID int64  `xml:"Islem_ID,omitempty"`
-			} `xml:"TP_Islem_Odeme_WNSResult,omitempty"`
-		} `xml:"TP_Islem_Odeme_WNSResponse,omitempty"`
+			} `xml:"TP_Islem_OdemeResult,omitempty"`
+		} `xml:"TP_Islem_OdemeResponse,omitempty"`
 
 		Encrypt struct {
 			Result string `xml:"SHA2B64Result,omitempty"`
@@ -98,7 +97,7 @@ func (api *API) Payment(request *PaymentRequest) (response *Response) {
 	request.Soap = "http://schemas.xmlsoap.org/soap/envelope/"
 	response = new(Response)
 	postdata, _ := xml.Marshal(request)
-	res, err := http.Post(Modes[api.Mode]+"?op=TP_Islem_Odeme_WNS", "text/xml; charset=utf-8", strings.NewReader(strings.ToLower(xml.Header)+string(postdata)))
+	res, err := http.Post(Modes[api.Mode]+"?op=TP_Islem_Odeme", "text/xml; charset=utf-8", strings.NewReader(strings.ToLower(xml.Header)+string(postdata)))
 	if err != nil {
 		log.Println(err)
 		return response
