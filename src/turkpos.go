@@ -6,8 +6,6 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
-
-	"golang.org/x/net/html/charset"
 )
 
 var Modes map[string]string = map[string]string{
@@ -107,7 +105,6 @@ func (api *API) Payment(request *PaymentRequest) (response *Response) {
 	}
 	defer res.Body.Close()
 	decoder := xml.NewDecoder(res.Body)
-	decoder.CharsetReader = charset.NewReaderLabel
 	decoder.Decode(&response)
 	return response
 }
@@ -124,7 +121,6 @@ func (api *API) Encrypt(request *EncryptRequest) (response *Response) {
 	}
 	defer res.Body.Close()
 	decoder := xml.NewDecoder(res.Body)
-	decoder.CharsetReader = charset.NewReaderLabel
 	decoder.Decode(&response)
 	return response
 }
