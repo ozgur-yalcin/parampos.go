@@ -1,4 +1,5 @@
 [![license](https://img.shields.io/:license-mit-blue.svg)](https://github.com/OzqurYalcin/turkpos/blob/master/LICENSE.md)
+[![documentation](https://pkg.go.dev/badge/github.com/OzqurYalcin/turkpos)](https://pkg.go.dev/github.com/OzqurYalcin/turkpos/src)
 
 # TurkPos
 TurkPos (ParamPos) API with golang
