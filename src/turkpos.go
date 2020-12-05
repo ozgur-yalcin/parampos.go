@@ -88,16 +88,15 @@ type Response struct {
 	}
 }
 
-func (api *API) Payment(request *PaymentRequest) (response *Response) {
-	hash := &EncryptRequest{}
+func (api API) Payment(request PaymentRequest) (response Response) {
+	hash := EncryptRequest{}
 	hash.Body.Encrypt.Data = request.Body.Payment.G.ClientCode + request.Body.Payment.GUID + strconv.Itoa(request.Body.Payment.PosID) + strconv.Itoa(request.Body.Payment.Installment) + request.Body.Payment.Price + request.Body.Payment.Amount + request.Body.Payment.OrderID + request.Body.Payment.CallbackError + request.Body.Payment.CallbackSuccess
 	encrypt := api.Encrypt(hash)
 	request.Body.Payment.Hash = encrypt.Body.Encrypt.Result
 	request.Body.Payment.NS = "https://turkpos.com.tr/"
 	request.Soap = "http://schemas.xmlsoap.org/soap/envelope/"
-	response = new(Response)
 	postdata, _ := xml.Marshal(request)
-	res, err := http.Post(Modes[api.Mode]+"?op=TP_Islem_Odeme", "text/xml; charset=utf-8", strings.NewReader(strings.ToLower(xml.Header)+string(postdata)))
+	res, err := http.Post(Modes[api.Mode]+"?op=TP_Islem_Odeme", "text/xml; charset=utf-8", strings.NewReader(xml.Header+string(postdata)))
 	if err != nil {
 		log.Println(err)
 		return response
@@ -108,12 +107,11 @@ func (api *API) Payment(request *PaymentRequest) (response *Response) {
 	return response
 }
 
-func (api *API) Encrypt(request *EncryptRequest) (response *Response) {
+func (api API) Encrypt(request EncryptRequest) (response Response) {
 	request.Soap = "http://schemas.xmlsoap.org/soap/envelope/"
 	request.Body.Encrypt.NS = "https://turkpos.com.tr/"
-	response = new(Response)
 	postdata, _ := xml.Marshal(request)
-	res, err := http.Post(Modes[api.Mode]+"?op=SHA2B64", "text/xml; charset=utf-8", strings.NewReader(strings.ToLower(xml.Header)+string(postdata)))
+	res, err := http.Post(Modes[api.Mode]+"?op=SHA2B64", "text/xml; charset=utf-8", strings.NewReader(xml.Header+string(postdata)))
 	if err != nil {
 		log.Println(err)
 		return response

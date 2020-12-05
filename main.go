@@ -18,8 +18,8 @@ func main() {
 }
 
 func view(w http.ResponseWriter, r *http.Request) {
-	api := &turkpos.API{"T"} // "T": test, "P": production
-	request := new(turkpos.PaymentRequest)
+	api := turkpos.API{"T"} // "T": test, "P": production
+	request := turkpos.PaymentRequest{}
 	request.Body.Payment.G.ClientCode = "10738"    // Müşteri No
 	request.Body.Payment.G.ClientUsername = "Test" // Kullanıcı adı
 	request.Body.Payment.G.ClientPassword = "Test" // Şifre
