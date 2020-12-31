@@ -88,7 +88,7 @@ type Response struct {
 	}
 }
 
-func (api API) Payment(request PaymentRequest) (response Response) {
+func (api *API) Payment(request PaymentRequest) (response Response) {
 	hash := EncryptRequest{}
 	hash.Body.Encrypt.Data = request.Body.Payment.G.ClientCode + request.Body.Payment.GUID + strconv.Itoa(request.Body.Payment.PosID) + strconv.Itoa(request.Body.Payment.Installment) + request.Body.Payment.Price + request.Body.Payment.Amount + request.Body.Payment.OrderID + request.Body.Payment.CallbackError + request.Body.Payment.CallbackSuccess
 	encrypt := api.Encrypt(hash)
@@ -107,7 +107,7 @@ func (api API) Payment(request PaymentRequest) (response Response) {
 	return response
 }
 
-func (api API) Encrypt(request EncryptRequest) (response Response) {
+func (api *API) Encrypt(request EncryptRequest) (response Response) {
 	request.Soap = "http://schemas.xmlsoap.org/soap/envelope/"
 	request.Body.Encrypt.NS = "https://turkpos.com.tr/"
 	postdata, _ := xml.Marshal(request)
