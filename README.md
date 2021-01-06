@@ -1,12 +1,12 @@
-[![license](https://img.shields.io/:license-mit-blue.svg)](https://github.com/OzqurYalcin/turkpos/blob/master/LICENSE.md)
-[![documentation](https://pkg.go.dev/badge/github.com/OzqurYalcin/turkpos)](https://pkg.go.dev/github.com/OzqurYalcin/turkpos/src)
+[![license](https://img.shields.io/:license-mit-blue.svg)](https://github.com/ozgur-soft/turkpos/blob/master/LICENSE.md)
+[![documentation](https://pkg.go.dev/badge/github.com/ozgur-soft/turkpos)](https://pkg.go.dev/github.com/ozgur-soft/turkpos/src)
 
 # TurkPos
 TurkPos (ParamPos) API with golang
 
 # Installation
 ```bash
-go get github.com/OzqurYalcin/turkpos
+go get github.com/ozgur-soft/turkpos
 ```
 
 # Sanalpos ödeme işlemi
@@ -21,7 +21,7 @@ import (
 	"strings"
 	"time"
 
-	turkpos "github.com/OzqurYalcin/turkpos/src"
+	turkpos "github.com/ozgur-soft/turkpos/src"
 )
 
 func main() {

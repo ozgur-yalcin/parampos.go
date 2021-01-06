@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	turkpos "github.com/OzqurYalcin/turkpos/src"
+	turkpos "github.com/ozgur-soft/turkpos/src"
 )
 
 func main() {
