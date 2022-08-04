@@ -299,6 +299,7 @@ func (api *API) PreAuth(ctx context.Context, payment *Payment) (res Response, er
 		return res, err
 	}
 	payment.NS = "https://turkpos.com.tr/"
+	payment.Type = "NS"
 	req := new(Request)
 	req.Body.PreAuth = payment
 	req.Soap = "http://schemas.xmlsoap.org/soap/envelope/"
@@ -335,6 +336,7 @@ func (api *API) Auth(ctx context.Context, payment *Payment) (res Response, err e
 		return res, err
 	}
 	payment.NS = "https://turkpos.com.tr/"
+	payment.Type = "NS"
 	req := new(Request)
 	req.Body.Auth = payment
 	req.Soap = "http://schemas.xmlsoap.org/soap/envelope/"
@@ -443,6 +445,7 @@ func (api *API) PreAuth3Dhtml(ctx context.Context, payment *Payment) (res string
 		return res, err
 	}
 	payment.NS = "https://turkpos.com.tr/"
+	payment.Type = "3D"
 	req := new(Request)
 	req.Body.PreAuth = payment
 	req.Soap = "http://schemas.xmlsoap.org/soap/envelope/"
@@ -481,6 +484,7 @@ func (api *API) Auth3Dhtml(ctx context.Context, payment *Payment) (res string, e
 		return res, err
 	}
 	payment.NS = "https://turkpos.com.tr/"
+	payment.Type = "3D"
 	req := new(Request)
 	req.Body.Auth = payment
 	req.Soap = "http://schemas.xmlsoap.org/soap/envelope/"
