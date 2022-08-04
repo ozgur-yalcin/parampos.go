@@ -1,108 +1,137 @@
-[![license](https://img.shields.io/:license-mit-blue.svg)](https://github.com/ozgur-soft/turkpos/blob/master/LICENSE.md)
-[![documentation](https://pkg.go.dev/badge/github.com/ozgur-soft/turkpos)](https://pkg.go.dev/github.com/ozgur-soft/turkpos/src)
+[![license](https://img.shields.io/:license-mit-blue.svg)](https://github.com/ozgur-soft/parampos.go/blob/master/LICENSE.md)
+[![documentation](https://pkg.go.dev/badge/github.com/ozgur-soft/parampos.go)](https://pkg.go.dev/github.com/ozgur-soft/parampos.go/src)
 
-# TurkPos
-TurkPos (ParamPos) API with golang
+# Parampos.go
+ParamPos (TurkPos) API with golang
 
 # Installation
 ```bash
-go get github.com/ozgur-soft/turkpos
+go get github.com/ozgur-soft/parampos.go
 ```
 
-# Sanalpos ödeme işlemi
+# Sanalpos satış işlemi
 ```go
 package main
 
 import (
-	"encoding/json"
+	"context"
+	"encoding/xml"
 	"fmt"
-	"net/http"
-	"strconv"
-	"strings"
-	"time"
 
-	turkpos "github.com/ozgur-soft/turkpos/src"
+	parampos "github.com/ozgur-soft/parampos.go/src"
+)
+
+// Pos bilgileri
+const (
+	envmode  = "TEST"                                 // Çalışma ortamı (Production : "PROD" - Test : "TEST")
+	clientid = "10738"                                // Müşteri numarası
+	username = "Test"                                 // Kullanıcı adı
+	password = "Test"                                 // Şifre
+	storekey = "0c13d406-873b-403b-9c09-a5766840d98c" // İşyeri anahtarı (GUID)
 )
 
 func main() {
-	http.HandleFunc("/", view)
-	server := http.Server{Addr: ":8080", ReadTimeout: 30 * time.Second, WriteTimeout: 30 * time.Second}
-	server.ListenAndServe()
-}
+	api, req := parampos.Api(clientid, username, password)
+	api.SetMode(envmode)
 
-func view(w http.ResponseWriter, r *http.Request) {
-	api := &turkpos.API{"T"} // "T": test, "P": production
-	request := turkpos.PaymentRequest{}
-	request.Body.Payment.G.ClientCode = "10738"    // Müşteri No
-	request.Body.Payment.G.ClientUsername = "Test" // Kullanıcı adı
-	request.Body.Payment.G.ClientPassword = "Test" // Şifre
+	req.SetGUID(storekey)
+	req.SetIPAddress("1.2.3.4")           // Müşteri ip adresi (zorunlu)
+	req.SetCardHolder("AD SOYAD")         // Kart sahibi (zorunlu)
+	req.SetCardNumber("4546711234567894") // Kart numarası (zorunlu)
+	req.SetCardExpiry("12", "26")         // Son kullanma tarihi - AA,YY (zorunlu)
+	req.SetCardCode("000")                // Kart arkasındaki 3 haneli numara (zorunlu)
+	req.SetPhoneNumber("5554443322")      // Müşteri cep telefonu (zorunlu)
+	req.SetAmount("1.00")                 // Satış tutarı (zorunlu)
+	req.SetInstallment("1")               // Taksit sayısı (zorunlu)
+	req.Type = "NS"
 
-	request.Body.Payment.GUID = "0c13d406-873b-403b-9c09-a5766840d98c" // Üye işyerine ait anahtar
-	request.Body.Payment.CallbackSuccess = "http://localhost:8080/"    // Ödeme başarılı ise dönülecek sayfa
-	request.Body.Payment.CallbackError = "http://localhost:8080/"      // Ödeme başarısız ise dönülecek sayfa
-	request.Body.Payment.Referer = "http://localhost:8080/"            // Ödeme sayfası
-
-	// Ödeme
-	transaction := 1.00 // İşlem tutarı
-	commission := 0.94  // Komisyon oranı
-	installment := 1    // Taksit
-
-	request.Body.Payment.PosID = 1029                    // 1029: yurtiçi, yurtdışı: 1023
-	request.Body.Payment.CardOwner = "AD SOYAD"          // Kart sahibi
-	request.Body.Payment.CardNumber = "4546711234567894" // Kart numarası
-	request.Body.Payment.CardMonth = "12"                // Son kullanma tarihi (Ay)
-	request.Body.Payment.CardYear = "2026"               // Son kullanma tarihi (Yıl)
-	request.Body.Payment.CardCvc = "000"                 // Kart Cvc Kodu
-	request.Body.Payment.GsmNumber = "5554443322"        // Müşteri cep telefonu
-	request.Body.Payment.IPAddr = "1.2.3.4"              // Müşteri ip adresi
-
-	// Komisyonu müşteri ödeyecek ise :
-	request.Body.Payment.Price = strings.ReplaceAll(fmt.Sprintf("%.2f", transaction), ".", ",")
-	request.Body.Payment.Amount = strings.ReplaceAll(fmt.Sprintf("%.2f", transaction+(transaction*commission/100)), ".", ",")
-	request.Body.Payment.Installment = installment
-
-	// Komisyonu işyeri ödeyecek ise :
-	request.Body.Payment.Price = strings.ReplaceAll(fmt.Sprintf("%.2f", transaction-(transaction*commission/100)), ".", ",")
-	request.Body.Payment.Amount = strings.ReplaceAll(fmt.Sprintf("%.2f", transaction), ".", ",")
-	request.Body.Payment.Installment = installment
-
-	switch r.Method {
-	case "GET":
-		if r.URL.Path == "/" {
-			response := api.Payment(request)
-			pretty, _ := json.MarshalIndent(response.Body.Payment, " ", " ")
-			fmt.Println(string(pretty))
-			if response.Body.Payment.Result.Code > 0 {
-				if response.Body.Payment.Result.URL == "NONSECURE" { // işlem başarılı
-					transactionID := response.Body.Payment.Result.TransactionID
-					fmt.Println(transactionID) // iptal ve iadelerde kullanılan dekont numarası
-				} else if strings.HasPrefix(response.Body.Payment.Result.URL, "https://") {
-					http.Redirect(w, r, response.Body.Payment.Result.URL, http.StatusTemporaryRedirect) // 3d yönlendirme
-				}
-			} else { // işlem başarısız
-				fmt.Println(response.Body.Payment.Result.Message) // Hata mesajı
-			}
-		}
-		break
-	case "POST": // 3D yönlendirme sonrası işlem sonucu
-		r.ParseForm()
-		response := new(turkpos.Response)
-		transactionID, _ := strconv.ParseInt(r.FormValue("TURKPOS_RETVAL_Dekont_ID"), 10, 64)
-		bankCode, _ := strconv.Atoi(r.FormValue("TURKPOS_RETVAL_Banka_Sonuc_Kod"))
-		code, _ := strconv.Atoi(r.FormValue("TURKPOS_RETVAL_Sonuc"))
-		message := r.FormValue("TURKPOS_RETVAL_Sonuc_Str")
-		response.Body.Payment.Result.TransactionID = transactionID
-		response.Body.Payment.Result.BankCode = bankCode
-		response.Body.Payment.Result.Code = code
-		response.Body.Payment.Result.Message = message
-		pretty, _ := json.MarshalIndent(response.Body.Payment, " ", " ")
+	// Satış
+	ctx := context.Background()
+	if res, err := api.Auth(ctx, req); err == nil {
+		pretty, _ := xml.MarshalIndent(res, " ", " ")
 		fmt.Println(string(pretty))
-		if response.Body.Payment.Result.Code > 0 {
-			fmt.Println(transactionID) // iptal ve iadelerde kullanılan dekont numarası
-		} else { // işlem başarısız
-			fmt.Println(response.Body.Payment.Result.Message) // Hata mesajı
-		}
-		break
+	} else {
+		fmt.Println(err)
+	}
+}
+```
+
+# Sanalpos iade işlemi
+```go
+package main
+
+import (
+	"context"
+	"encoding/xml"
+	"fmt"
+
+	parampos "github.com/ozgur-soft/parampos.go/src"
+)
+
+// Pos bilgileri
+const (
+	envmode  = "TEST"                                 // Çalışma ortamı (Production : "PROD" - Test : "TEST")
+	clientid = "10738"                                // Müşteri numarası
+	username = "Test"                                 // Kullanıcı adı
+	password = "Test"                                 // Şifre
+	storekey = "0c13d406-873b-403b-9c09-a5766840d98c" // İşyeri anahtarı (GUID)
+)
+
+func main() {
+	api, req := parampos.Api(clientid, username, password)
+	api.SetMode(envmode)
+
+	req.SetGUID(storekey)
+	req.SetAmount("1.00") // İade tutarı (zorunlu)
+	req.SetOrderId("")    // Sipariş numarası (zorunlu)
+
+	// İade
+	ctx := context.Background()
+	if res, err := api.Refund(ctx, req); err == nil {
+		pretty, _ := xml.MarshalIndent(res, " ", " ")
+		fmt.Println(string(pretty))
+	} else {
+		fmt.Println(err)
+	}
+}
+```
+
+# Sanalpos iptal işlemi
+```go
+package main
+
+import (
+	"context"
+	"encoding/xml"
+	"fmt"
+
+	parampos "github.com/ozgur-soft/parampos.go/src"
+)
+
+// Pos bilgileri
+const (
+	envmode  = "TEST"                                 // Çalışma ortamı (Production : "PROD" - Test : "TEST")
+	clientid = "10738"                                // Müşteri numarası
+	username = "Test"                                 // Kullanıcı adı
+	password = "Test"                                 // Şifre
+	storekey = "0c13d406-873b-403b-9c09-a5766840d98c" // İşyeri anahtarı (GUID)
+)
+
+func main() {
+	api, req := parampos.Api(clientid, username, password)
+	api.SetMode(envmode)
+
+	req.SetGUID(storekey)
+	req.SetAmount("1.00") // İptal tutarı (zorunlu)
+	req.SetOrderId("")    // Sipariş numarası (zorunlu)
+
+	// İptal
+	ctx := context.Background()
+	if res, err := api.Cancel(ctx, req); err == nil {
+		pretty, _ := xml.MarshalIndent(res, " ", " ")
+		fmt.Println(string(pretty))
+	} else {
+		fmt.Println(err)
 	}
 }
 ```
