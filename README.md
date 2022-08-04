@@ -43,7 +43,6 @@ func main() {
 	req.SetPhoneNumber("5554443322")      // Müşteri cep telefonu (zorunlu)
 	req.SetAmount("1.00")                 // Satış tutarı (zorunlu)
 	req.SetInstallment("1")               // Taksit sayısı (zorunlu)
-	req.Type = "NS"
 
 	// Satış
 	ctx := context.Background()
