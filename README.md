@@ -34,7 +34,7 @@ func main() {
 	api, req := parampos.Api(clientid, username, password)
 	api.SetMode(envmode)
 
-	req.SetGUID(storekey)
+	req.SetStoreKey(storekey)
 	req.SetIPAddress("1.2.3.4")           // Müşteri ip adresi (zorunlu)
 	req.SetCardHolder("AD SOYAD")         // Kart sahibi (zorunlu)
 	req.SetCardNumber("4546711234567894") // Kart numarası (zorunlu)
@@ -80,7 +80,7 @@ func main() {
 	api, req := parampos.Api(clientid, username, password)
 	api.SetMode(envmode)
 
-	req.SetGUID(storekey)
+	req.SetStoreKey(storekey)
 	req.SetAmount("1.00") // İade tutarı (zorunlu)
 	req.SetOrderId("")    // Sipariş numarası (zorunlu)
 
@@ -120,7 +120,7 @@ func main() {
 	api, req := parampos.Api(clientid, username, password)
 	api.SetMode(envmode)
 
-	req.SetGUID(storekey)
+	req.SetStoreKey(storekey)
 	req.SetAmount("1.00") // İptal tutarı (zorunlu)
 	req.SetOrderId("")    // Sipariş numarası (zorunlu)
 
