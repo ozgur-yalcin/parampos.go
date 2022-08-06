@@ -204,7 +204,7 @@ func (api *API) SetMode(mode string) {
 	api.Mode = mode
 }
 
-func (payment *Payment) SetGUID(guid string) {
+func (payment *Payment) SetStoreKey(guid string) {
 	payment.GUID = guid
 }
 
