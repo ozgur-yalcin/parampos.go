@@ -9,7 +9,7 @@ ParamPos (TurkPos) API with golang
 go get github.com/ozgur-soft/parampos.go
 ```
 
-# Sanalpos satış işlemi
+# Satış
 ```go
 package main
 
@@ -55,7 +55,7 @@ func main() {
 }
 ```
 
-# Sanalpos iade işlemi
+# İade
 ```go
 package main
 
@@ -95,7 +95,7 @@ func main() {
 }
 ```
 
-# Sanalpos iptal işlemi
+# İptal
 ```go
 package main
 
