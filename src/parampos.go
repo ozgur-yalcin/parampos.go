@@ -18,7 +18,7 @@ var EndPoints = map[string]string{
 	"PROD": "https://dmzws.param.com.tr/turkpos.ws/service_turkpos_prod.asmx",
 }
 
-var Currencies map[string]int = map[string]int{
+var CurrencyCode map[string]int = map[string]int{
 	"TRY": 1000,
 	"YTL": 1000,
 	"TRL": 1000,
