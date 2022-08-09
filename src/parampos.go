@@ -13,7 +13,7 @@ import (
 	"strings"
 )
 
-var EndPoints map[string]string = map[string]string{
+var EndPoints = map[string]string{
 	"TEST": "https://test-dmz.param.com.tr:4443/turkpos.ws/service_turkpos_test.asmx",
 	"PROD": "https://dmzws.param.com.tr/turkpos.ws/service_turkpos_prod.asmx",
 }
