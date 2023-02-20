@@ -1,12 +1,12 @@
-[![license](https://img.shields.io/:license-mit-blue.svg)](https://github.com/ozgur-soft/parampos.go/blob/master/LICENSE.md)
-[![documentation](https://pkg.go.dev/badge/github.com/ozgur-soft/parampos.go)](https://pkg.go.dev/github.com/ozgur-soft/parampos.go/src)
+[![license](https://img.shields.io/:license-mit-blue.svg)](https://github.com/ozgur-yalcin/parampos.go/blob/master/LICENSE.md)
+[![documentation](https://pkg.go.dev/badge/github.com/ozgur-yalcin/parampos.go)](https://pkg.go.dev/github.com/ozgur-yalcin/parampos.go/src)
 
 # Parampos.go
 ParamPos (TurkPos) API with golang
 
 # Installation
 ```bash
-go get github.com/ozgur-soft/parampos.go
+go get github.com/ozgur-yalcin/parampos.go
 ```
 
 # Satış
@@ -18,7 +18,7 @@ import (
 	"encoding/xml"
 	"fmt"
 
-	parampos "github.com/ozgur-soft/parampos.go/src"
+	parampos "github.com/ozgur-yalcin/parampos.go/src"
 )
 
 // Pos bilgileri
@@ -64,7 +64,7 @@ import (
 	"encoding/xml"
 	"fmt"
 
-	parampos "github.com/ozgur-soft/parampos.go/src"
+	parampos "github.com/ozgur-yalcin/parampos.go/src"
 )
 
 // Pos bilgileri
@@ -104,7 +104,7 @@ import (
 	"encoding/xml"
 	"fmt"
 
-	parampos "github.com/ozgur-soft/parampos.go/src"
+	parampos "github.com/ozgur-yalcin/parampos.go/src"
 )
 
 // Pos bilgileri
