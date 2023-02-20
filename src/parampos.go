@@ -7,7 +7,6 @@ import (
 	"encoding/hex"
 	"encoding/xml"
 	"errors"
-	"html"
 	"log"
 	"net/http"
 	"strings"
@@ -88,7 +87,7 @@ type Result struct {
 	BankHostMsg     string `xml:"Bank_HostMsg,omitempty"`
 	BankCode        int64  `xml:"Banka_Sonuc_Kod,omitempty"`
 	BankTransID     string `xml:"Bank_Trans_ID,omitempty"`
-	Code            int64  `xml:"Sonuc,omitempty"`
+	Code            int    `xml:"Sonuc,omitempty"`
 	Message         string `xml:"Sonuc_Str,omitempty"`
 	Description     string `xml:"Sonuc_Ack,omitempty"`
 	OrderId         string `xml:"Siparis_ID,omitempty"`
@@ -322,12 +321,10 @@ func (api *API) PreAuth(ctx context.Context, payment *Payment) (res Response, er
 	if err := decoder.Decode(&res); err != nil {
 		return res, err
 	}
-	switch res.Body.PreAuth.Result.Code {
-	case 1:
+	if res.Body.PreAuth.Result.Code == 1 {
 		return res, nil
-	default:
-		return res, errors.New(res.Body.PreAuth.Result.Message)
 	}
+	return res, errors.New(res.Body.PreAuth.Result.Message)
 }
 
 func (api *API) Auth(ctx context.Context, payment *Payment) (res Response, err error) {
@@ -359,12 +356,10 @@ func (api *API) Auth(ctx context.Context, payment *Payment) (res Response, err e
 	if err := decoder.Decode(&res); err != nil {
 		return res, err
 	}
-	switch res.Body.Auth.Result.Code {
-	case 1:
+	if res.Body.Auth.Result.Code == 1 {
 		return res, nil
-	default:
-		return res, errors.New(res.Body.Auth.Result.Message)
 	}
+	return res, errors.New(res.Body.Auth.Result.Message)
 }
 
 func (api *API) PreAuth3D(ctx context.Context, payment *Payment) (res Response, err error) {
@@ -395,12 +390,10 @@ func (api *API) PreAuth3D(ctx context.Context, payment *Payment) (res Response, 
 	if err := decoder.Decode(&res); err != nil {
 		return res, err
 	}
-	switch res.Body.Pay.Result.Code {
-	case 1:
+	if res.Body.Pay.Result.Code == 1 {
 		return res, nil
-	default:
-		return res, errors.New(res.Body.Pay.Result.Message)
 	}
+	return res, errors.New(res.Body.Pay.Result.Message)
 }
 
 func (api *API) Auth3D(ctx context.Context, payment *Payment) (res Response, err error) {
@@ -431,15 +424,13 @@ func (api *API) Auth3D(ctx context.Context, payment *Payment) (res Response, err
 	if err := decoder.Decode(&res); err != nil {
 		return res, err
 	}
-	switch res.Body.Pay.Result.Code {
-	case 1:
+	if res.Body.Pay.Result.Code == 1 {
 		return res, nil
-	default:
-		return res, errors.New(res.Body.Pay.Result.Message)
 	}
+	return res, errors.New(res.Body.Pay.Result.Message)
 }
 
-func (api *API) PreAuth3Dhtml(ctx context.Context, payment *Payment) (res string, err error) {
+func (api *API) PreAuth3Dhtml(ctx context.Context, payment *Payment) (res Response, err error) {
 	payment.Hash, err = api.PreAuthHash(payment)
 	if err != nil {
 		return res, err
@@ -465,20 +456,16 @@ func (api *API) PreAuth3Dhtml(ctx context.Context, payment *Payment) (res string
 	}
 	defer response.Body.Close()
 	decoder := xml.NewDecoder(response.Body)
-	data := Response{}
-	if err := decoder.Decode(&data); err != nil {
+	if err := decoder.Decode(&res); err != nil {
 		return res, err
 	}
-	switch data.Body.PreAuth.Result.Code {
-	case 1:
-		res = B64(html.UnescapeString(data.Body.PreAuth.Result.HTML))
+	if res.Body.PreAuth.Result.Code == 1 {
 		return res, nil
-	default:
-		return res, errors.New(data.Body.PreAuth.Result.Message)
 	}
+	return res, errors.New(res.Body.PreAuth.Result.Message)
 }
 
-func (api *API) Auth3Dhtml(ctx context.Context, payment *Payment) (res string, err error) {
+func (api *API) Auth3Dhtml(ctx context.Context, payment *Payment) (res Response, err error) {
 	payment.Hash, err = api.AuthHash(payment)
 	if err != nil {
 		return res, err
@@ -504,17 +491,13 @@ func (api *API) Auth3Dhtml(ctx context.Context, payment *Payment) (res string, e
 	}
 	defer response.Body.Close()
 	decoder := xml.NewDecoder(response.Body)
-	data := Response{}
-	if err := decoder.Decode(&data); err != nil {
+	if err := decoder.Decode(&res); err != nil {
 		return res, err
 	}
-	switch data.Body.Auth.Result.Code {
-	case 1:
-		res = B64(html.UnescapeString(data.Body.Auth.Result.HTML))
+	if res.Body.Auth.Result.Code == 1 {
 		return res, nil
-	default:
-		return res, errors.New(data.Body.Auth.Result.Message)
 	}
+	return res, errors.New(res.Body.Auth.Result.Message)
 }
 
 func (api *API) PostAuth(ctx context.Context, payment *Payment) (res Response, err error) {
@@ -544,12 +527,10 @@ func (api *API) PostAuth(ctx context.Context, payment *Payment) (res Response, e
 	if err := decoder.Decode(&res); err != nil {
 		return res, err
 	}
-	switch res.Body.PostAuth.Result.Code {
-	case 1:
+	if res.Body.PostAuth.Result.Code == 1 {
 		return res, nil
-	default:
-		return res, errors.New(res.Body.PostAuth.Result.Message)
 	}
+	return res, errors.New(res.Body.PostAuth.Result.Message)
 }
 
 func (api *API) Refund(ctx context.Context, payment *Payment) (res Response, err error) {
@@ -580,12 +561,10 @@ func (api *API) Refund(ctx context.Context, payment *Payment) (res Response, err
 	if err := decoder.Decode(&res); err != nil {
 		return res, err
 	}
-	switch res.Body.Cancel.Result.Code {
-	case 1:
+	if res.Body.Cancel.Result.Code == 1 {
 		return res, nil
-	default:
-		return res, errors.New(res.Body.Cancel.Result.Message)
 	}
+	return res, errors.New(res.Body.Cancel.Result.Message)
 }
 
 func (api *API) Cancel(ctx context.Context, payment *Payment) (res Response, err error) {
@@ -616,12 +595,10 @@ func (api *API) Cancel(ctx context.Context, payment *Payment) (res Response, err
 	if err := decoder.Decode(&res); err != nil {
 		return res, err
 	}
-	switch res.Body.Cancel.Result.Code {
-	case 1:
+	if res.Body.Cancel.Result.Code == 1 {
 		return res, nil
-	default:
-		return res, errors.New(res.Body.Cancel.Result.Message)
 	}
+	return res, errors.New(res.Body.Cancel.Result.Message)
 }
 
 func (api *API) PreCancel(ctx context.Context, payment *Payment) (res Response, err error) {
@@ -648,10 +625,8 @@ func (api *API) PreCancel(ctx context.Context, payment *Payment) (res Response, 
 	if err := decoder.Decode(&res); err != nil {
 		return res, err
 	}
-	switch res.Body.PreCancel.Result.Code {
-	case 1:
+	if res.Body.PreCancel.Result.Code == 1 {
 		return res, nil
-	default:
-		return res, errors.New(res.Body.PreCancel.Result.Message)
 	}
+	return res, errors.New(res.Body.PreCancel.Result.Message)
 }
