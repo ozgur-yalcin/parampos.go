@@ -266,11 +266,11 @@ func (api *API) PreAuthHash(payment *Payment) (string, error) {
 func (api *API) Encrypt(ctx context.Context, req *Request) (res Response, err error) {
 	req.Soap = "http://schemas.xmlsoap.org/soap/envelope/"
 	req.Body.Hash.NS = "https://turkpos.com.tr/"
-	postdata, err := xml.Marshal(req)
+	payload, err := xml.Marshal(req)
 	if err != nil {
 		return res, err
 	}
-	request, err := http.NewRequestWithContext(ctx, "POST", EndPoints[api.Mode], strings.NewReader(xml.Header+string(postdata)))
+	request, err := http.NewRequestWithContext(ctx, "POST", EndPoints[api.Mode], strings.NewReader(xml.Header+string(payload)))
 	if err != nil {
 		return res, err
 	}
@@ -302,11 +302,11 @@ func (api *API) PreAuth(ctx context.Context, payment *Payment) (res Response, er
 	req := new(Request)
 	req.Body.PreAuth = payment
 	req.Soap = "http://schemas.xmlsoap.org/soap/envelope/"
-	postdata, err := xml.Marshal(req)
+	payload, err := xml.Marshal(req)
 	if err != nil {
 		return res, err
 	}
-	request, err := http.NewRequestWithContext(ctx, "POST", EndPoints[api.Mode], strings.NewReader(xml.Header+string(postdata)))
+	request, err := http.NewRequestWithContext(ctx, "POST", EndPoints[api.Mode], strings.NewReader(xml.Header+string(payload)))
 	if err != nil {
 		return res, err
 	}
@@ -337,11 +337,11 @@ func (api *API) Auth(ctx context.Context, payment *Payment) (res Response, err e
 	req := new(Request)
 	req.Body.Auth = payment
 	req.Soap = "http://schemas.xmlsoap.org/soap/envelope/"
-	postdata, err := xml.Marshal(req)
+	payload, err := xml.Marshal(req)
 	if err != nil {
 		return res, err
 	}
-	request, err := http.NewRequestWithContext(ctx, "POST", EndPoints[api.Mode], strings.NewReader(xml.Header+string(postdata)))
+	request, err := http.NewRequestWithContext(ctx, "POST", EndPoints[api.Mode], strings.NewReader(xml.Header+string(payload)))
 	if err != nil {
 		return res, err
 	}
@@ -371,11 +371,11 @@ func (api *API) PreAuth3D(ctx context.Context, payment *Payment) (res Response, 
 	req := new(Request)
 	req.Body.Pay = payment
 	req.Soap = "http://schemas.xmlsoap.org/soap/envelope/"
-	postdata, err := xml.Marshal(req)
+	payload, err := xml.Marshal(req)
 	if err != nil {
 		return res, err
 	}
-	request, err := http.NewRequestWithContext(ctx, "POST", EndPoints[api.Mode], strings.NewReader(xml.Header+string(postdata)))
+	request, err := http.NewRequestWithContext(ctx, "POST", EndPoints[api.Mode], strings.NewReader(xml.Header+string(payload)))
 	if err != nil {
 		return res, err
 	}
@@ -405,11 +405,11 @@ func (api *API) Auth3D(ctx context.Context, payment *Payment) (res Response, err
 	req := new(Request)
 	req.Body.Pay = payment
 	req.Soap = "http://schemas.xmlsoap.org/soap/envelope/"
-	postdata, err := xml.Marshal(req)
+	payload, err := xml.Marshal(req)
 	if err != nil {
 		return res, err
 	}
-	request, err := http.NewRequestWithContext(ctx, "POST", EndPoints[api.Mode], strings.NewReader(xml.Header+string(postdata)))
+	request, err := http.NewRequestWithContext(ctx, "POST", EndPoints[api.Mode], strings.NewReader(xml.Header+string(payload)))
 	if err != nil {
 		return res, err
 	}
@@ -440,11 +440,11 @@ func (api *API) PreAuth3Dhtml(ctx context.Context, payment *Payment) (res Respon
 	req := new(Request)
 	req.Body.PreAuth = payment
 	req.Soap = "http://schemas.xmlsoap.org/soap/envelope/"
-	postdata, err := xml.Marshal(req)
+	payload, err := xml.Marshal(req)
 	if err != nil {
 		return res, err
 	}
-	request, err := http.NewRequestWithContext(ctx, "POST", EndPoints[api.Mode], strings.NewReader(xml.Header+string(postdata)))
+	request, err := http.NewRequestWithContext(ctx, "POST", EndPoints[api.Mode], strings.NewReader(xml.Header+string(payload)))
 	if err != nil {
 		return res, err
 	}
@@ -475,11 +475,11 @@ func (api *API) Auth3Dhtml(ctx context.Context, payment *Payment) (res Response,
 	req := new(Request)
 	req.Body.Auth = payment
 	req.Soap = "http://schemas.xmlsoap.org/soap/envelope/"
-	postdata, err := xml.Marshal(req)
+	payload, err := xml.Marshal(req)
 	if err != nil {
 		return res, err
 	}
-	request, err := http.NewRequestWithContext(ctx, "POST", EndPoints[api.Mode], strings.NewReader(xml.Header+string(postdata)))
+	request, err := http.NewRequestWithContext(ctx, "POST", EndPoints[api.Mode], strings.NewReader(xml.Header+string(payload)))
 	if err != nil {
 		return res, err
 	}
@@ -508,11 +508,11 @@ func (api *API) PostAuth(ctx context.Context, payment *Payment) (res Response, e
 	req := new(Request)
 	req.Body.PostAuth = payment
 	req.Soap = "http://schemas.xmlsoap.org/soap/envelope/"
-	postdata, err := xml.Marshal(req)
+	payload, err := xml.Marshal(req)
 	if err != nil {
 		return res, err
 	}
-	request, err := http.NewRequestWithContext(ctx, "POST", EndPoints[api.Mode], strings.NewReader(xml.Header+string(postdata)))
+	request, err := http.NewRequestWithContext(ctx, "POST", EndPoints[api.Mode], strings.NewReader(xml.Header+string(payload)))
 	if err != nil {
 		return res, err
 	}
@@ -542,11 +542,11 @@ func (api *API) Refund(ctx context.Context, payment *Payment) (res Response, err
 	req := new(Request)
 	req.Body.Cancel = payment
 	req.Soap = "http://schemas.xmlsoap.org/soap/envelope/"
-	postdata, err := xml.Marshal(req)
+	payload, err := xml.Marshal(req)
 	if err != nil {
 		return res, err
 	}
-	request, err := http.NewRequestWithContext(ctx, "POST", EndPoints[api.Mode], strings.NewReader(xml.Header+string(postdata)))
+	request, err := http.NewRequestWithContext(ctx, "POST", EndPoints[api.Mode], strings.NewReader(xml.Header+string(payload)))
 	if err != nil {
 		return res, err
 	}
@@ -576,11 +576,11 @@ func (api *API) Cancel(ctx context.Context, payment *Payment) (res Response, err
 	req := new(Request)
 	req.Body.Cancel = payment
 	req.Soap = "http://schemas.xmlsoap.org/soap/envelope/"
-	postdata, err := xml.Marshal(req)
+	payload, err := xml.Marshal(req)
 	if err != nil {
 		return res, err
 	}
-	request, err := http.NewRequestWithContext(ctx, "POST", EndPoints[api.Mode], strings.NewReader(xml.Header+string(postdata)))
+	request, err := http.NewRequestWithContext(ctx, "POST", EndPoints[api.Mode], strings.NewReader(xml.Header+string(payload)))
 	if err != nil {
 		return res, err
 	}
@@ -606,11 +606,11 @@ func (api *API) PreCancel(ctx context.Context, payment *Payment) (res Response, 
 	req := new(Request)
 	req.Body.PreCancel = payment
 	req.Soap = "http://schemas.xmlsoap.org/soap/envelope/"
-	postdata, err := xml.Marshal(req)
+	payload, err := xml.Marshal(req)
 	if err != nil {
 		return res, err
 	}
-	request, err := http.NewRequestWithContext(ctx, "POST", EndPoints[api.Mode], strings.NewReader(xml.Header+string(postdata)))
+	request, err := http.NewRequestWithContext(ctx, "POST", EndPoints[api.Mode], strings.NewReader(xml.Header+string(payload)))
 	if err != nil {
 		return res, err
 	}
